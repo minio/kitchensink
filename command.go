@@ -1,0 +1,96 @@
+// Copyright (c) 2015-2021 MinIO, Inc.
+//
+// This file is part of MinIO Object Storage stack
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+package main
+
+import (
+	"os"
+
+	"github.com/minio/cli"
+)
+
+var helpTemplate = `
+NAME:
+  {{.Name}} - {{.Usage}}
+
+USAGE:
+  {{.Name}} COMMAND{{if .VisibleFlags}} [ARGUMENTS...] [COMMAND FLAGS | -h]{{end}}
+
+FLAGS:
+  {{range .VisibleFlags}}{{.}}
+  {{end}}
+
+EXAMPLE:
+	{{.Name}} https://endpoint ACCESSKEY SECRETKEY BUCKETNAME --insecure
+	
+	`
+
+var createCmd = cli.Command{
+	Name:               "create",
+	Usage:              "creates a dataset in the endpoint on the specified bucket",
+	Action:             mainCreate,
+	Flags:              insecureFlag,
+	CustomHelpTemplate: helpTemplate,
+}
+
+var createMultiCmd = cli.Command{
+	Name:               "createM",
+	Usage:              "creates a dataset in the endpoint on the specified bucket using multi-part upload",
+	Action:             mainCreateMulti,
+	Flags:              insecureFlag,
+	CustomHelpTemplate: helpTemplate,
+}
+
+var verifyCmd = cli.Command{
+	Name:               "verify",
+	Usage:              "verifies the data in the bucket by checking the md5sum",
+	Action:             mainVerify,
+	Flags:              insecureFlag,
+	CustomHelpTemplate: helpTemplate,
+}
+
+//list of commands
+var appCmds = []cli.Command{
+	createCmd,
+	createMultiCmd,
+	verifyCmd,
+}
+
+//flags that are used
+var (
+	insecureFlag = []cli.Flag{
+		cli.BoolFlag{
+			Name:  "insecure",
+			Usage: "skips verification in transport",
+		},
+	}
+)
+
+func main() {
+	app := cli.NewApp()
+	app.UsageText = "A cli application that creates a nested directory on a specified endpoint"
+	app.Commands = appCmds
+	app.Action = func(ctx *cli.Context) error {
+		if ctx.Args().First() == "" {
+			cli.ShowAppHelp(ctx)
+		}
+
+		return nil
+	}
+	app.Flags = append(insecureFlag)
+	app.Run(os.Args)
+}
