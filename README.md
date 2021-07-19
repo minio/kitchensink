@@ -8,7 +8,6 @@ Commands
 ```
 create                  creates a dataset in the endpoint on the specified bucket
 verify                  verifies the data in the bucket by checking the md5sum
-
 ```
 
 Examples 
