@@ -62,15 +62,13 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 
 	objectList := s3Client.ListObjects(context.Background(), bucketname, minio.ListObjectsOptions{
 		WithMetadata: true,
-		//Prefix:       "myprefix",
-		Recursive: true,
+		Recursive:    true,
 	})
 
 	var errCount int
 	for object := range objectList {
 		if object.Err != nil {
-			log.Printf("ERR")
-			fmt.Println(object.Err)
+			fmt.Println("Error occured:", object.Err)
 			return
 		}
 
