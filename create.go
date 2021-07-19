@@ -26,7 +26,6 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
-	"fmt"
 	"io"
 	"log"
 
@@ -86,6 +85,7 @@ func putObject(object *bytes.Buffer, md5val string, size int64, bucketname strin
 	_, err := s3Client.PutObject(context.Background(), bucketname, objectname, object, size,
 		minio.PutObjectOptions{
 			ContentType:  "application/octet-stream",
+			PartSize:     1024*1024*5 + 7, //random prime but greater than 5mb
 			UserMetadata: metadata,
 		})
 	if err != nil {
@@ -97,13 +97,13 @@ func putObject(object *bytes.Buffer, md5val string, size int64, bucketname strin
 // Create populates a specified bucket with random files in a nested directory structure
 func Create(endpoint string, bucketname string, options minio.Options) {
 
-	fmt.Println("CREATING DATASET...")
+	log.Println("CREATING DATASET...")
 
 	s3Client, _ = minio.New(endpoint, &options)
 
 	//making folders with nested object
 	for i := 0; i < 5; i++ {
-		for j := 0; j < 1; j++ {
+		for j := 0; j < 2; j++ {
 
 			//within outside folder file
 			obj, md5sum, fileSize := createObject()

@@ -20,7 +20,6 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"fmt"
 	"net"
 	"net/http"
 	"path/filepath"
@@ -100,7 +99,6 @@ func validateEndpoint(ctx *cli.Context, endpoint string) (bool, string, http.Rou
 		transport = tr
 
 	}
-	fmt.Println(targetURL.Host)
 	return useTLS, targetURL.Host, transport
 
 }

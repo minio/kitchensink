@@ -33,21 +33,21 @@ lint:
 	@GO111MODULE=on ${GOPATH}/bin/golangci-lint cache clean
 	@GO111MODULE=on ${GOPATH}/bin/golangci-lint run --timeout=5m --config ./.golangci.yml
 
-# Builds ks locally.
+# Builds kitchensink locally.
 build: checks
-	@echo "Building ks binary to './ks'"
-	@GO111MODULE=on CGO_ENABLED=0 go build -trimpath -tags kqueue --ldflags $(BUILD_LDFLAGS) -o $(PWD)/ks
+	@echo "Building ks binary to './kitchensink'"
+	@GO111MODULE=on CGO_ENABLED=0 go build -trimpath -tags kqueue --ldflags $(BUILD_LDFLAGS) -o $(PWD)/kitchensink
 
-# Builds KS and installs it to $GOPATH/bin.
+# Builds kitchensink and installs it to $GOPATH/bin.
 install: build
-	@echo "Installing ks binary to '$(GOPATH)/bin/ks'"
-	@mkdir -p $(GOPATH)/bin && cp -f $(PWD)/ks $(GOPATH)/bin/ks
-	@echo "Installation successful. To learn more, try \"ks --help\"."
+	@echo "Installing kitchensink binary to '$(GOPATH)/bin/kitchensink'"
+	@mkdir -p $(GOPATH)/bin && cp -f $(PWD)/kitchensink $(GOPATH)/bin/kitchensink
+	@echo "Installation successful. To learn more, try \"kitchensink --help\"."
 
 clean:
 	@echo "Cleaning up all the generated files"
 	@find . -name '*.test' | xargs rm -fv
 	@find . -name '*~' | xargs rm -fv
-	@rm -rvf ks
+	@rm -rvf kitchensink
 	@rm -rvf build
 	@rm -rvf release

@@ -28,14 +28,14 @@ NAME:
   {{.Name}} - {{.Usage}}
 
 USAGE:
-  {{.Name}} COMMAND{{if .VisibleFlags}} [ARGUMENTS...] [COMMAND FLAGS | -h]{{end}}
+  {{.Name}} [ARGUMENTS...] [COMMAND FLAGS | -h]{{end}}
 
 FLAGS:
   {{range .VisibleFlags}}{{.}}
   {{end}}
 
 EXAMPLE:
-	{{.Name}} https://endpoint ACCESSKEY SECRETKEY BUCKETNAME --insecure
+	{{.Name}} https://endpoint ACCESSKEY SECRETKEY BUCKETNAME
 	
 	`
 
@@ -43,14 +43,6 @@ var createCmd = cli.Command{
 	Name:               "create",
 	Usage:              "creates a dataset in the endpoint on the specified bucket",
 	Action:             mainCreate,
-	Flags:              insecureFlag,
-	CustomHelpTemplate: helpTemplate,
-}
-
-var createMultiCmd = cli.Command{
-	Name:               "createM",
-	Usage:              "creates a dataset in the endpoint on the specified bucket using multi-part upload",
-	Action:             mainCreateMulti,
 	Flags:              insecureFlag,
 	CustomHelpTemplate: helpTemplate,
 }
@@ -66,7 +58,6 @@ var verifyCmd = cli.Command{
 //list of commands
 var appCmds = []cli.Command{
 	createCmd,
-	createMultiCmd,
 	verifyCmd,
 }
 

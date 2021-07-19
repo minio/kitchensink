@@ -68,7 +68,7 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 	var errCount int
 	for object := range objectList {
 		if object.Err != nil {
-			fmt.Println("Error occured:", object.Err)
+			log.Println("Error occured:", object.Err)
 			return
 		}
 
@@ -91,9 +91,9 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 	}
 
 	if errCount == 0 {
-		fmt.Println("Successfully Verified")
+		log.Println("Successfully Verified")
 	} else {
-		fmt.Println("Finished with ", errCount, "errors")
+		log.Println("Finished with ", errCount, "errors")
 	}
 
 }
