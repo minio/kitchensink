@@ -41,6 +41,7 @@ func mainCreate(ctx *cli.Context) error {
 	argsLength := len(ctx.Args())
 	if argsLength != 4 {
 		cli.ShowCommandHelpAndExit(ctx, "create", 1)
+		return nil
 	}
 	endpoint := ctx.Args().Get(0)
 	secure, URLstr, transport := validateEndpoint(ctx, endpoint)
@@ -102,7 +103,7 @@ func Create(endpoint string, bucketname string, options minio.Options) {
 	s3Client, _ = minio.New(endpoint, &options)
 
 	//making folders with nested object
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 3; i++ {
 		for j := 0; j < 2; j++ {
 
 			//within outside folder file

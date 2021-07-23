@@ -23,21 +23,19 @@ import (
 	"github.com/minio/cli"
 )
 
-var helpTemplate = `
-NAME:
-  {{.Name}} - {{.Usage}}
+var helpTemplate = `NAME:
+{{.HelpName}} - {{.Usage}}
 
 USAGE:
-  {{.Name}} [ARGUMENTS...] [COMMAND FLAGS | -h]{{end}}
+  {{.HelpName}} [arguments...]
 
 FLAGS:
   {{range .VisibleFlags}}{{.}}
   {{end}}
-
 EXAMPLE:
-	{{.Name}} https://endpoint ACCESSKEY SECRETKEY BUCKETNAME
+	{{.HelpName}} https://endpoint ACCESSKEY SECRETKEY BUCKETNAME
 	
-	`
+`
 
 var createCmd = cli.Command{
 	Name:               "create",
@@ -48,17 +46,25 @@ var createCmd = cli.Command{
 }
 
 var verifyCmd = cli.Command{
-	Name:               "verify",
-	Usage:              "verifies the data in the bucket by checking the md5sum",
-	Action:             mainVerify,
-	Flags:              insecureFlag,
-	CustomHelpTemplate: helpTemplate,
+	Name:   "verify",
+	Usage:  "verifies the data in the bucket by checking the md5sum",
+	Action: mainVerify,
+	Flags:  insecureFlag,
+	//CustomHelpTemplate: helpTemplate,
+}
+
+var deleteCmd = cli.Command{
+	Name:   "delete",
+	Usage:  "deletes all the data in the specified bucket",
+	Action: mainDelete,
+	//CustomHelpTemplate: helpTemplate,
 }
 
 //list of commands
 var appCmds = []cli.Command{
 	createCmd,
 	verifyCmd,
+	deleteCmd,
 }
 
 //flags that are used
