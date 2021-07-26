@@ -1,7 +1,7 @@
 # kitchensink
 
 Kitchensink is a command-line tool that creates a set of nested objects 
-of different sizes in a specified bucket and verifies the data by cross-checking md5sum of the objects before and after upload. This tool is helpful since it helps validate objects between different releases and versions. For example, if you started off with an older version this tool will verify if the hash for each object matches between versions. 
+of different sizes in a specified bucket and verifies the data by cross-checking md5sum of the objects before and after upload. This tool is helpful since it helps validate objects between different releases and versions. For example, if you started with an older version and upgrade this tool will verify if the hash for each object matches between the different versions. 
 
 After pulling the code locally, use Make to install and build the program. 
 
