@@ -1,17 +1,23 @@
 # kitchensink
 
-Kitchensink is a command-line tool that creates a dataset on a specified endpoint and verifies the data through the 
-md5sum of the objects. Use Make to build and install the program locally.
+Kitchensink is a command-line tool that creates a set of nested objects 
+of different sizes in a specified bucket and verifies the data by cross-checking  
+md5sum of the objects before and after upload. This tool is helpful since it helps validate objects between 
+different releases and versions. For example, if you started off with an older version this tool will verify 
+if the hash for each object matches between versions. 
 
+After pulling the code locally, use Make to install and build the program. 
 
 Commands
 ```
-create                  creates a dataset in the endpoint on the specified bucket
-verify                  verifies the data in the bucket by checking the md5sum
-delete                  deletes all the objects in a specified bucket
-```
+create                  creates a nested folder structure with objects of random prime number sizes in the specified bucket
+verify                  verifies the data in the bucket by comparing the md5sum of the object when it was uploaded to when it was retrieved. 
+delete                  deletes all the objects in the specified bucket
 
-Examples 
+```
+**Note:** All of the commands listed above take in the endpoint server along with the credentials (access key and secret key) for that server. In addition, the commands also need a bucketname where you want to create, verify, or delete. An example of the create command is shown below.   
+
+Example 
 ```
 ./kitchensink create https://endpoint ACCESSKEY SECRETKEY BUCKETNAME
 ```
