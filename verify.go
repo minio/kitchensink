@@ -83,8 +83,13 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 		}
 
 		md5val := hex.EncodeToString(hash.Sum(nil))
+
+		//retrieving metadata stored from create
 		metadata := object.UserMetadata["X-Amz-Meta-Content-Md5"]
-		if md5val != metadata {
+		if metadata == "" {
+			log.Println("Object", object.Key, "was not uploaded using create, no metadata hash available")
+			errCount++
+		} else if md5val != metadata || md5val != object.ETag {
 			log.Println("ERR: Object", object.Key, "hash does not match")
 			errCount++
 		}
