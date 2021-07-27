@@ -6,13 +6,61 @@ After pulling the code locally, use Make to install and build the program.
 
 ## Commands
 ```
-create        creates a nested folder structure with objects of random prime number sizes in the specified bucket
-verify        verifies the data in the bucket by comparing the md5sum of the object from when it was uploaded to when it was retrieved. 
-delete        deletes all the objects in the specified bucket
-```
-**Note:** All of the commands listed above take in the endpoint server along with the credentials (access key and secret key) for that server as arguments. In addition, the commands also need a bucketname where you want to create, verify, or delete. An example of the create command is shown below.   
+**create**        Creates a nested folder structure with objects of random prime number sizes in a pre-existing bucket
 
-## Example 
+USAGE:
+    kitchensink create [ARGUMEMTS] [FLAGS]
+
+ARGUMENTS:
+    endpoint
+    access key
+    secret key
+    bucket name
+
+FLAGS:
+    --insecure       skips verification in transport when putting objects
+    --help           displays help menu
+
+EXAMPLE:
+    kitchensink create https://play.min.io Q3AM3UQ867SPQQA43P2F zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG my-test-bucket 
+
 ```
-./kitchensink create https://endpoint ACCESSKEY SECRETKEY BUCKETNAME
+
 ```
+**verify**        Verify gets each object and computes the hash. It then compares this hash with the metadata from create. 
+USAGE:
+    kitchensink verify [ARGUMEMTS] [FLAGS]
+
+ARGUMENTS:
+    endpoint
+    access key
+    secret key
+    bucket name
+    
+FLAGS:
+    --insecure       skips verification in transport options
+    --help           displays help menu
+
+EXAMPLE:
+    kitchensink verify https://play.min.io Q3AM3UQ867SPQQA43P2F zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG my-test-bucket
+```
+
+```
+**delete**        deletes all the objects in the specified bucket, cleans the bucket
+
+USAGE:
+    kitchensink delete [ARGUMEMTS] 
+
+ARGUMENTS:
+    endpoint
+    access key
+    secret key
+    bucket name
+    
+EXAMPLE:
+    kitchensink delete https://play.min.io Q3AM3UQ867SPQQA43P2F zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG my-test-bucket
+
+```
+
+  
+
