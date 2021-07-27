@@ -6,7 +6,7 @@ After pulling the code locally, use Make to install and build the program.
 
 ## Commands
 ```
-**create**        Creates a nested folder structure with objects of random prime number sizes in a pre-existing bucket
+__create__        Creates a nested folder structure with objects of random prime number sizes in a pre-existing bucket
 
 USAGE:
     kitchensink create [ARGUMEMTS] [FLAGS]
