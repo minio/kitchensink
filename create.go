@@ -26,6 +26,7 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"io"
 	"log"
 
@@ -35,6 +36,11 @@ import (
 )
 
 var s3Client *minio.Client
+
+const jsonFilename = "kitchensink"
+
+//var etags []ETagData
+var etags = map[string]string{}
 
 //Processes inputs from command line
 func mainCreate(ctx *cli.Context) error {
@@ -59,31 +65,44 @@ func mainCreate(ctx *cli.Context) error {
 }
 
 //Creates an object of prime number size and gets the md5 hash of object
-func createObject() (obj *bytes.Buffer, md5val string, size int64) {
+func createObject(isZero bool) (obj *bytes.Buffer, md5val string, size int64) {
 	hash := md5.New()
 	object := bytes.NewBuffer(nil)
 	writer := io.MultiWriter(hash, object)
-	bits := rand.Intn(24) + 3
-	//Creates the prime number file size
-	prime, _ := crand.Prime(crand.Reader, bits)
 
-	_, err := io.CopyN(writer, crand.Reader, prime.Int64())
-	if err != nil {
-		log.Fatalln(err)
+	fileSize := int64(0)
+	//creates 0 byte object
+	if isZero == true {
+		_, err := io.CopyN(writer, object, 0)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	} else {
+		//Creates the random prime number file size
+
+		bits := rand.Intn(23) + 2
+		prime, _ := crand.Prime(crand.Reader, bits)
+		fileSize = prime.Int64()
+
+		_, err := io.CopyN(writer, crand.Reader, fileSize)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
+
 	md5val = hex.EncodeToString(hash.Sum(nil))
 
-	return object, md5val, prime.Int64()
+	return object, md5val, fileSize
 }
 
 //Puts the passed in object with specified objectname and size
 func putObject(object *bytes.Buffer, md5val string, size int64, bucketname string, objectname string) {
 
-	object, md5, size := createObject()
+	//object, md5, size := createObject()
 	metadata := map[string]string{
-		"content-md5": md5,
+		"content-md5": md5val,
 	}
-	_, err := s3Client.PutObject(context.Background(), bucketname, objectname, object, size,
+	uploadInfo, err := s3Client.PutObject(context.Background(), bucketname, objectname, object, size,
 		minio.PutObjectOptions{
 			ContentType:  "application/octet-stream",
 			PartSize:     1024*1024*5 + 7, //random prime but greater than 5mb
@@ -93,6 +112,7 @@ func putObject(object *bytes.Buffer, md5val string, size int64, bucketname strin
 		log.Fatalln(err)
 	}
 
+	etags[uploadInfo.Key] = uploadInfo.ETag
 }
 
 // Create populates a specified bucket with random files in a nested directory structure
@@ -103,42 +123,41 @@ func Create(endpoint string, bucketname string, options minio.Options) {
 	s3Client, _ = minio.New(endpoint, &options)
 
 	//making folders with nested object
-	for i := 0; i < 3; i++ {
-		for j := 0; j < 2; j++ {
+	for i := 0; i < 2; i++ {
 
-			//within outside folder file
-			obj, md5sum, fileSize := createObject()
-			fileName := "folder00" + strconv.Itoa(i) + "/tests00@" + strconv.Itoa(j)
-			putObject(obj, md5sum, fileSize, bucketname, fileName)
-		}
+		//within outside folder file
+		obj, md5sum, fileSize := createObject(false)
+		fileName := "folder00" + strconv.Itoa(i) + "/tests00@" + strconv.Itoa(i)
+		putObject(obj, md5sum, fileSize, bucketname, fileName)
+
 		//nested folder files
-		testObject, md5val, testSize := createObject()
-		fname := "folder00" + strconv.Itoa(i) + "/" + "folder0" + strconv.Itoa(i) + "/tests0" + strconv.Itoa(i)
+		testObject, md5val, testSize := createObject(false)
+		//fname := "folder00" + strconv.Itoa(i) + "/" + "folder0" + strconv.Itoa(i) + "/tests0" + strconv.Itoa(i)
+		fname := "folder000/folder00/tests00"
 		putObject(testObject, md5val, testSize, bucketname, fname)
 
 	}
-	hash := md5.New()
-	object := bytes.NewBuffer(nil)
-	writer := io.MultiWriter(hash, object)
-	_, err := io.CopyN(writer, object, 0)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	md5val := hex.EncodeToString(hash.Sum(nil))
-	zeroByte, err := s3Client.PutObject(context.Background(), bucketname, "zero-bytes", object, 0,
-		minio.PutObjectOptions{
-			ContentType: "application/octet-stream",
-			UserMetadata: map[string]string{
-				"content-md5": md5val,
-			},
-		})
-	_ = zeroByte
-	//creates deeply nested object
-	for num := 0; num < 1; num++ {
-		object, md5, size := createObject()
-		name := "folder00" + strconv.Itoa(num) + "/folder0" + strconv.Itoa(num) + "/folder-test/folder-x/folder/sample!&" + strconv.Itoa(num)
-		putObject(object, md5, size, bucketname, name)
 
+	obj, md5sum, fileSize := createObject(true)
+	putObject(obj, md5sum, fileSize, bucketname, "zero-bytes")
+
+	//creates deeply nested object
+	nestedObject, md5hash, size := createObject(false)
+	name := "folder000/folder00/folder-test/folder-x/folder/sample!&"
+	putObject(nestedObject, md5hash, size, bucketname, name)
+
+	dataBytes, err := json.Marshal(etags)
+	if err != nil {
+		log.Println("error:", err)
 	}
+
+	object := bytes.NewBuffer(dataBytes)
+
+	//hashes the json file
+	hash := md5.New()
+	written, _ := io.Copy(hash, bytes.NewReader(dataBytes))
+	md5val := hex.EncodeToString(hash.Sum(nil))
+	putObject(object, md5val, written, bucketname, jsonFilename)
+
 	log.Println("FINISHED SUCCESSFULLY")
 }

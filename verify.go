@@ -21,8 +21,10 @@ import (
 	"context"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 
 	"github.com/minio/cli"
@@ -64,11 +66,21 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 		WithMetadata: true,
 		Recursive:    true,
 	})
+	jsonFile, err := s3Client.GetObject(context.Background(), bucketname, jsonFilename, minio.GetObjectOptions{})
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	bytes, _ := ioutil.ReadAll(jsonFile)
+
+	//putting all the data into a map of object name and etag
+	etags = map[string]string{}
+	json.Unmarshal(bytes, &etags)
 
 	var errCount int
 	for object := range objectList {
 		if object.Err != nil {
-			log.Println("Error occured:", object.Err)
+			fmt.Println("Error occured:", object.Err)
 			return
 		}
 
@@ -81,24 +93,31 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 		if err != nil {
 			log.Fatalln(err)
 		}
+		etag := etags[object.Key]
 
+		//do not have etag for the json so can only check etag for all other objects
+		if object.Key != jsonFilename {
+			if etag != object.ETag {
+				log.Println("Object", object.Key, "etag does not match")
+			}
+		}
 		md5val := hex.EncodeToString(hash.Sum(nil))
 
 		//retrieving metadata stored from create
 		metadata := object.UserMetadata["X-Amz-Meta-Content-Md5"]
 		if metadata == "" {
-			log.Println("Object", object.Key, "was not uploaded using create, no metadata hash available")
+			fmt.Println("Object", object.Key, "was not uploaded using create, no metadata hash available")
 			errCount++
-		} else if md5val != metadata || md5val != object.ETag {
-			log.Println("ERR: Object", object.Key, "hash does not match")
+		} else if md5val != metadata {
+			fmt.Println("ERR: Object", object.Key, "hash does not match")
 			errCount++
 		}
 	}
 
 	if errCount == 0 {
-		log.Println("Successfully Verified")
+		fmt.Println("Successfully Verified")
 	} else {
-		log.Println("Finished with ", errCount, "errors")
+		fmt.Println("Finished with ", errCount, "errors")
 	}
 
 }

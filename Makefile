@@ -35,7 +35,7 @@ lint:
 
 # Builds kitchensink locally.
 build: checks
-	@echo "Building ks binary to './kitchensink'"
+	@echo "Building kitchensink binary to './kitchensink'"
 	@GO111MODULE=on CGO_ENABLED=0 go build -trimpath -tags kqueue --ldflags $(BUILD_LDFLAGS) -o $(PWD)/kitchensink
 
 # Builds kitchensink and installs it to $GOPATH/bin.
@@ -46,7 +46,7 @@ install: build
 
 clean:
 	@echo "Cleaning up all the generated files"
-	@find . -name '*.test' | xargs rm -fv
+	@find . -name '*.txt' | xargs rm -fv
 	@find . -name '*~' | xargs rm -fv
 	@rm -rvf kitchensink
 	@rm -rvf build
