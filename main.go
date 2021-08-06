@@ -79,7 +79,8 @@ var (
 
 func main() {
 	app := cli.NewApp()
-	app.UsageText = "A cli application that creates a nested directory on a specified endpoint"
+	app.UsageText = "A cli application that creates datafiles of different prime 
+	number sizes and verifies them by cross-validating their md5sum and etag from upload to download"
 	app.Commands = appCmds
 	app.Action = func(ctx *cli.Context) error {
 		if ctx.Args().First() == "" {
@@ -88,6 +89,7 @@ func main() {
 
 		return nil
 	}
+	app.HideHelpCommand = true
 	app.Flags = append(insecureFlag)
 	app.Run(os.Args)
 }
