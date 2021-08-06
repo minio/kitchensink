@@ -80,7 +80,7 @@ var (
 func main() {
 	app := cli.NewApp()
 	app.UsageText = "A cli application that creates datafiles of different prime 
-	number sizes and verifies them by cross-validating their md5sum and etag from upload to download"
+	number sizes and verifies the files by cross-validating the md5sum and etag after download"
 	app.Commands = appCmds
 	app.Action = func(ctx *cli.Context) error {
 		if ctx.Args().First() == "" {
