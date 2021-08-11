@@ -19,6 +19,7 @@ package main
 
 import (
 	crand "crypto/rand"
+	"fmt"
 	"math/rand"
 	"strconv"
 
@@ -118,12 +119,22 @@ func putObject(object *bytes.Buffer, md5val string, size int64, bucketname strin
 // Create populates a specified bucket with random files in a nested directory structure
 func Create(endpoint string, bucketname string, options minio.Options) {
 
-	log.Println("CREATING DATASET...")
+	var err error
+	s3Client, err = minio.New(endpoint, &options)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	s3Client, _ = minio.New(endpoint, &options)
+	//checks if bucket exists otherwise makes the bucket
+	if found, _ := s3Client.BucketExists(context.Background(), bucketname); !found {
+		fmt.Println("Making bucket", bucketname)
+		s3Client.MakeBucket(context.Background(), bucketname, minio.MakeBucketOptions{})
+	}
+
+	fmt.Println("Creating Dataset")
 
 	//making folders with nested object
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 3; i++ {
 
 		//within outside folder file
 		obj, md5sum, fileSize := createObject(false)
@@ -132,8 +143,7 @@ func Create(endpoint string, bucketname string, options minio.Options) {
 
 		//nested folder files
 		testObject, md5val, testSize := createObject(false)
-		//fname := "folder00" + strconv.Itoa(i) + "/" + "folder0" + strconv.Itoa(i) + "/tests0" + strconv.Itoa(i)
-		fname := "folder000/folder00/tests00"
+		fname := "folder00" + strconv.Itoa(i) + "/" + "folder0" + strconv.Itoa(i) + "/tests0" + strconv.Itoa(i)
 		putObject(testObject, md5val, testSize, bucketname, fname)
 
 	}
@@ -159,5 +169,5 @@ func Create(endpoint string, bucketname string, options minio.Options) {
 	md5val := hex.EncodeToString(hash.Sum(nil))
 	putObject(object, md5val, written, bucketname, jsonFilename)
 
-	log.Println("FINISHED SUCCESSFULLY")
+	fmt.Println("Finished Successfully")
 }

@@ -55,7 +55,7 @@ func mainVerify(ctx *cli.Context) error {
 
 //Verify will compare the md5sums of each of the object
 func Verify(endpoint string, bucketname string, options minio.Options) {
-	fmt.Println("VERIFYING DATASET...")
+	fmt.Println("Verifying Dataset...")
 
 	s3Client, err := minio.New(endpoint, &options)
 	if err != nil {

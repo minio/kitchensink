@@ -99,7 +99,15 @@ func validateEndpoint(ctx *cli.Context, endpoint string) (bool, string, http.Rou
 		transport = tr
 
 	}
-	return useTLS, targetURL.Host, transport
+
+	var url string
+	if targetURL.Type == 1 {
+		url = targetURL.Path
+		useTLS = false
+	} else {
+		url = targetURL.Host
+	}
+	return useTLS, url, transport
 
 }
 
