@@ -17,14 +17,14 @@ ARGUMENTS:
     bucket name
 
 FLAGS:
-    --insecure       skips verification in transport when putting objects
-    --help           displays help menu
+    --insecure       disable SSL certificate verification
+    --help           show help
 
 EXAMPLE:
     kitchensink create https://play.min.io Q3AM3UQ867SPQQA43P2F zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG my-test-bucket 
 
 ```
-**`verify:`**        Verifies objects by retrieving and calculating the hash. It then compares against the metadata stored from create.
+**`verify:`**        Downloads and verifies hash of objects uploaded by the create command.
 ``` 
 USAGE:
     kitchensink verify [ARGUMEMTS] [FLAGS]
@@ -36,8 +36,8 @@ ARGUMENTS:
     bucket name
     
 FLAGS:
-    --insecure       skips verification in transport options
-    --help           displays help menu
+    --insecure       disable SSL certificate verification
+    --help           show help
 
 EXAMPLE:
     kitchensink verify https://play.min.io Q3AM3UQ867SPQQA43P2F zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG my-test-bucket
