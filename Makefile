@@ -1,11 +1,8 @@
 PWD := $(shell pwd)
 GOPATH := $(shell go env GOPATH)
-LDFLAGS := $(shell go run buildscripts/gen-ldflags.go)
 
 GOARCH := $(shell go env GOARCH)
 GOOS := $(shell go env GOOS)
-
-BUILD_LDFLAGS := '$(LDFLAGS)'
 
 all: build
 
@@ -36,7 +33,7 @@ lint:
 # Builds kitchensink locally.
 build: checks
 	@echo "Building kitchensink binary to './kitchensink'"
-	@GO111MODULE=on CGO_ENABLED=0 go build -trimpath -tags kqueue --ldflags $(BUILD_LDFLAGS) -o $(PWD)/kitchensink
+	@GO111MODULE=on CGO_ENABLED=0 go build -trimpath -tags kqueue --ldflags "-s -w" -o $(PWD)/kitchensink
 
 # Builds kitchensink and installs it to $GOPATH/bin.
 install: build
