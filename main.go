@@ -39,7 +39,7 @@ EXAMPLE:
 
 var createCmd = cli.Command{
 	Name:               "create",
-	Usage:              "creates a dataset in the endpoint on the specified bucket",
+	Usage:              "creates a dataset on the specified bucket",
 	Action:             mainCreate,
 	Flags:              insecureFlag,
 	CustomHelpTemplate: helpTemplate,
@@ -47,7 +47,7 @@ var createCmd = cli.Command{
 
 var verifyCmd = cli.Command{
 	Name:   "verify",
-	Usage:  "verifies the data in the bucket by checking the md5sum",
+	Usage:  "Downloads and verifies the hash of the objects created by the create command",
 	Action: mainVerify,
 	Flags:  insecureFlag,
 	//CustomHelpTemplate: helpTemplate,
@@ -55,7 +55,7 @@ var verifyCmd = cli.Command{
 
 var deleteCmd = cli.Command{
 	Name:   "delete",
-	Usage:  "deletes all the data in the specified bucket",
+	Usage:  "deletes all the objects in the specified bucket",
 	Action: mainDelete,
 	//CustomHelpTemplate: helpTemplate,
 }
@@ -79,7 +79,7 @@ var (
 
 func main() {
 	app := cli.NewApp()
-	app.UsageText = "A cli application that creates objects of different prime number sizes and verifies the files by cross-validating the md5sum and etag after download"
+	app.UsageText = "A tool to validate the consistency of data uploaded to MinIO."
 	app.Commands = appCmds
 	app.Action = func(ctx *cli.Context) error {
 		if ctx.Args().First() == "" {
