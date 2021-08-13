@@ -36,6 +36,7 @@ EXAMPLE:
 	{{.HelpName}} https://endpoint ACCESSKEY SECRETKEY BUCKETNAME
 	
 `
+var version = "(dev)"
 
 var createCmd = cli.Command{
 	Name:               "create",
@@ -90,6 +91,7 @@ func main() {
 	}
 	app.Usage = "A tool to validate the consistency of data uploaded to MinIO."
 	app.Author = "MinIO, Inc."
+	app.Version = version
 	app.HideHelpCommand = true
 	app.Flags = append(insecureFlag)
 	app.Run(os.Args)
