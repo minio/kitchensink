@@ -88,6 +88,8 @@ func main() {
 
 		return nil
 	}
+	app.Usage = "A tool to validate the consistency of data uploaded to MinIO."
+	app.Author = "MinIO, Inc."
 	app.HideHelpCommand = true
 	app.Flags = append(insecureFlag)
 	app.Run(os.Args)
