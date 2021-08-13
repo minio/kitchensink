@@ -72,7 +72,7 @@ var (
 	insecureFlag = []cli.Flag{
 		cli.BoolFlag{
 			Name:  "insecure",
-			Usage: "skips verification in transport",
+			Usage: "disable SSL certificate verification",
 		},
 	}
 )
