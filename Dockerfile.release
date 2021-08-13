@@ -1,0 +1,25 @@
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.4
+
+ARG TAG
+
+LABEL name="MinIO" \
+      vendor="MinIO Inc <dev@min.io>" \
+      maintainer="MinIO Inc <dev@min.io>" \
+      version="${TAG}" \
+      release="${TAG}" \
+      summary="A tool to validate the consistency of data uploaded to MinIO." \
+      description="A tool to validate the consistency of data uploaded to MinIO."
+
+RUN \
+    microdnf update --nodocs && \
+    microdnf install ca-certificates --nodocs && \
+    microdnf clean all && \
+    mkdir /licenses && \
+    curl -s -q https://raw.githubusercontent.com/minio/kitchensink/master/CREDITS -o /licenses/CREDITS && \
+    curl -s -q https://raw.githubusercontent.com/minio/kitchensink/master/LICENSE -o /licenses/LICENSE
+
+COPY kitchensink /kitchensink
+
+EXPOSE 7373
+
+ENTRYPOINT ["/kitchensink"]
