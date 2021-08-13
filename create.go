@@ -18,18 +18,16 @@
 package main
 
 import (
-	crand "crypto/rand"
-	"fmt"
-	"math/rand"
-	"strconv"
-
 	"bytes"
 	"context"
 	"crypto/md5"
+	crand "crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"io"
 	"log"
+	"math/rand"
+	"strconv"
 
 	"github.com/minio/cli"
 	"github.com/minio/minio-go/v7"
@@ -127,11 +125,10 @@ func Create(endpoint string, bucketname string, options minio.Options) {
 
 	//checks if bucket exists otherwise makes the bucket
 	if found, _ := s3Client.BucketExists(context.Background(), bucketname); !found {
-		fmt.Println("Making bucket", bucketname)
 		s3Client.MakeBucket(context.Background(), bucketname, minio.MakeBucketOptions{})
 	}
 
-	fmt.Println("Creating Dataset")
+	log.Println("Creating Dataset")
 
 	//making folders with nested object
 	for i := 0; i < 3; i++ {
@@ -158,7 +155,7 @@ func Create(endpoint string, bucketname string, options minio.Options) {
 
 	dataBytes, err := json.Marshal(etags)
 	if err != nil {
-		log.Println("error:", err)
+		log.Fatalln("error:", err)
 	}
 
 	object := bytes.NewBuffer(dataBytes)
@@ -169,5 +166,5 @@ func Create(endpoint string, bucketname string, options minio.Options) {
 	md5val := hex.EncodeToString(hash.Sum(nil))
 	putObject(object, md5val, written, bucketname, jsonFilename)
 
-	fmt.Println("Finished Successfully")
+	log.Println("Finished Successfully")
 }

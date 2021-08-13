@@ -22,7 +22,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -55,7 +54,7 @@ func mainVerify(ctx *cli.Context) error {
 
 //Verify will compare the md5sums of each of the object
 func Verify(endpoint string, bucketname string, options minio.Options) {
-	fmt.Println("Verifying Dataset...")
+	log.Println("Verifying Dataset...")
 
 	s3Client, err := minio.New(endpoint, &options)
 	if err != nil {
@@ -80,7 +79,7 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 	var errCount int
 	for object := range objectList {
 		if object.Err != nil {
-			fmt.Println("Error occured:", object.Err)
+			log.Fatalln("Error occured:", object.Err)
 			return
 		}
 
@@ -106,18 +105,18 @@ func Verify(endpoint string, bucketname string, options minio.Options) {
 		//retrieving metadata stored from create
 		metadata := object.UserMetadata["X-Amz-Meta-Content-Md5"]
 		if metadata == "" {
-			fmt.Println("Object", object.Key, "was not uploaded using create, no metadata hash available")
+			log.Println("Object", object.Key, "was not uploaded using create, no metadata hash available")
 			errCount++
 		} else if md5val != metadata {
-			fmt.Println("ERR: Object", object.Key, "hash does not match")
+			log.Println("ERR: Object", object.Key, "hash does not match")
 			errCount++
 		}
 	}
 
 	if errCount == 0 {
-		fmt.Println("Successfully Verified")
+		log.Println("Successfully Verified")
 	} else {
-		fmt.Println("Finished with ", errCount, "errors")
+		log.Fatalln("Finished with ", errCount, "errors")
 	}
 
 }

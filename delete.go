@@ -50,7 +50,7 @@ func mainDelete(ctx *cli.Context) error {
 //Delete removes all the objects in the specified bucket
 func Delete(endpoint string, bucketname string, options minio.Options) {
 
-	log.Println("CLEANING BUCKET...")
+	log.Println("Cleaning bucket")
 
 	s3Client, err := minio.New(endpoint, &options)
 	if err != nil {
@@ -73,5 +73,5 @@ func Delete(endpoint string, bucketname string, options minio.Options) {
 		}
 	}
 
-	log.Println("BUCKET CLEANED SUCCESSFULLY...")
+	log.Println("Bucket Cleaned Successfully")
 }
