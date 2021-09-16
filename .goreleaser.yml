@@ -66,7 +66,7 @@ changelog:
 dockers:
 - image_templates:
   - "minio/kitchensink:{{ .Tag }}-amd64"
-  use_buildx: true
+  use: buildx
   dockerfile: Dockerfile.release
   extra_files:
     - LICENSE
@@ -76,7 +76,7 @@ dockers:
   - "--build-arg=TAG={{ .Tag }}"
 - image_templates:
   - "minio/kitchensink:{{ .Tag }}-ppc64le"
-  use_buildx: true
+  use: buildx
   dockerfile: Dockerfile.release
   extra_files:
     - LICENSE
@@ -86,7 +86,7 @@ dockers:
   - "--build-arg=TAG={{ .Tag }}"
 - image_templates:
   - "minio/kitchensink:{{ .Tag }}-s390x"
-  use_buildx: true
+  use: buildx
   dockerfile: Dockerfile.release
   extra_files:
     - LICENSE
@@ -96,7 +96,7 @@ dockers:
   - "--build-arg=TAG={{ .Tag }}"
 - image_templates:
   - "minio/kitchensink:{{ .Tag }}-arm64"
-  use_buildx: true
+  use: buildx
   goarch: arm64
   dockerfile: Dockerfile.release
   extra_files:
@@ -107,7 +107,7 @@ dockers:
   - "--build-arg=TAG={{ .Tag }}"
 - image_templates:
   - "quay.io/minio/kitchensink:{{ .Tag }}-amd64"
-  use_buildx: true
+  use: buildx
   dockerfile: Dockerfile.release
   extra_files:
     - LICENSE
@@ -117,7 +117,7 @@ dockers:
   - "--build-arg=TAG={{ .Tag }}"
 - image_templates:
   - "quay.io/minio/kitchensink:{{ .Tag }}-ppc64le"
-  use_buildx: true
+  use: buildx
   dockerfile: Dockerfile.release
   extra_files:
     - LICENSE
@@ -127,7 +127,7 @@ dockers:
   - "--build-arg=TAG={{ .Tag }}"
 - image_templates:
   - "quay.io/minio/kitchensink:{{ .Tag }}-s390x"
-  use_buildx: true
+  use: buildx
   dockerfile: Dockerfile.release
   extra_files:
     - LICENSE
@@ -137,7 +137,7 @@ dockers:
   - "--build-arg=TAG={{ .Tag }}"
 - image_templates:
   - "quay.io/minio/kitchensink:{{ .Tag }}-arm64"
-  use_buildx: true
+  use: buildx
   goarch: arm64
   dockerfile: Dockerfile.release
   extra_files:
